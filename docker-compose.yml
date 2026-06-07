@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: demo-dozzle
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DOZZLE_LEVEL=info
+      - DOZZLE_TAIL_SIZE=300
+    restart: always
+    networks:
+      - demo-net
+
+  backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: demo-backend-api
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - PORT=3000
+      - SERVICE_NAME=demo-dozzle
+      - LOG_FORMAT=text
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - demo-net
+
+networks:
+  demo-net:
+    driver: bridge
