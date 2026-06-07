@@ -5,7 +5,7 @@ services:
     image: amir20/dozzle:latest
     container_name: demo-dozzle
     ports:
-      - "127.0.0.1:8080:8080"
+      - "0.0.0.0:8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: demo-backend-api
     ports:
-      - "127.0.0.1:3000:3000"
+      - "0.0.0.0:3000:3000"
     environment:
       - PORT=3000
       - SERVICE_NAME=demo-dozzle
